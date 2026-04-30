@@ -591,7 +591,7 @@ class Screen(Entity):
                 # Draw LINE or POLYGON with objdata = [lat0,lon,lat1,lon1,lat2,lon2,..]
                 if self.objtype[i]=='LINE' or self.objtype[i]=="POLY" or self.objtype[i]=="POLYLINE":
                     npoints = int(len(self.objdata[i])/2)
-                    print(npoints)
+                    # print(npoints)
                     x0,y0 = self.ll2xy(self.objdata[i][0],self.objdata[i][1])
                     for j in range(1,npoints):
                         x1,y1 = self.ll2xy(self.objdata[i][j*2],self.objdata[i][j*2+1])
@@ -758,7 +758,8 @@ class Screen(Entity):
 
             # Draw conflicts: line from a/c to closest point of approach
             nconf = len(bs.traf.cd.confpairs_unique)
-            n2conf = len(bs.traf.cd.confpairs)
+            #n2conf = len(bs.traf.cd.confpairs)
+            n2conf = min(len(bs.traf.cd.confpairs), len(bs.traf.cd.tcpamax))
 
             if nconf>0:
 
@@ -767,7 +768,7 @@ class Screen(Entity):
                     if i>=0 and i<bs.traf.ntraf and (i in trafsel):
                         latcpa, loncpa = geo.kwikpos(bs.traf.lat[i], bs.traf.lon[i], \
                                                     bs.traf.trk[i], bs.traf.cd.tcpamax[j] * bs.traf.gs[i] / nm)
-                        altcpa = bs.traf.lat[i] + bs.traf.vs[i]*bs.traf.cd.tcpamax[j]
+                        altcpa = bs.traf.alt[i] + bs.traf.vs[i]*bs.traf.cd.tcpamax[j]
                         xc, yc = self.ll2xy(latcpa,loncpa)
                         yc = yc - altcpa * self.isoalt
                         pg.draw.line(self.win,amber,(xc,yc),(trafx[i],trafy[i]))
